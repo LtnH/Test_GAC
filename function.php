@@ -1,9 +1,9 @@
 <?php
-function Send_db($row, $connect) {
-    $row[3] = str_replace("/", "-", $row[3]);
+function Send_db($row, $connect) {  //fonction d'envoie sur la BD
+    $row[3] = str_replace("/", "-", $row[3]); //formatage des dates
     $row[3] = date("Y-m-d", strtotime($row[3]));
-    if (Erreur_Tab($row) == true) {
-        if (strpos($row[7], 'appel') !== FALSE) {
+    if (Erreur_Tab($row) == true) {  //destion d'erreur dans le fichier
+        if (strpos($row[7], 'appel') !== FALSE) {  // stokage des donné en fonction de leur type
             $sql = "INSERT into table_appel (date,hour,type,dur_ap) 
 values ('" . $row[3] . "','" . $row[4] . "','appel','" . $row[5] . "')";
             $result = mysqli_query($connect, $sql);
@@ -24,7 +24,7 @@ values ('" . $row[3] . "','" . $row[4] . "','appel','" . $row[5] . "')";
     }
 }
 
-function Erreur_Tab($row)
+function Erreur_Tab($row) //test de la validité des dates
 {
     try {
         if (strtotime($row[3]) == FALSE)
@@ -41,11 +41,12 @@ function Erreur_Tab($row)
     return true;
 }
 
-function Total_heure($connect) {
+function Total_heure($connect) { //calcul des heure total
     $result = mysqli_query($connect,"SELECT SUM(TIME_TO_SEC(dur_ap)) FROM table_appel 
-WHERE date >= '2012-02-15' AND type = 'appel'");
+WHERE date >= '2012-02-15' AND type = 'appel'"); //récupéation du total en seconde
     $total_sec = mysqli_fetch_array($result);
     $total_sec = $total_sec[0];
+    //convertion manuel en H:M:S car la fonction SEC_TO_TIME de sql ne le permettais pas
     $h = intval(abs($total_sec / 3600));
     $total_sec = $total_sec - ($h*3600);
     $m = intval(abs($total_sec / 60));
@@ -60,16 +61,16 @@ WHERE date >= '2012-02-15' AND type = 'appel'");
     return ($total_h);
 }
 
-function Top_data($connet) {
+function Top_data($connet) { //récupération des meilleurs data
     $result = mysqli_query($connet,"SELECT tot_data FROM `table_appel` 
 WHERE (hour < '8:00' OR hour > '18:00') AND type = 'data' ORDER BY tot_data DESC");
     while ($total_data[] = mysqli_fetch_array($result)) {}
-    for ($i = 0; $i != 10; $i++)
+    for ($i = 0; $i != 10; $i++) //on ne récupère que les dix première
         $top_data[] = $total_data[$i][0];
     return $top_data;
 }
 
-function Total_sms($connect) {
+function Total_sms($connect) { //récupération du total des sms
     $result = mysqli_query($connect,"SELECT COUNT(type) FROM table_appel WHERE type = 'sms'");
     $sms = mysqli_fetch_array($result);
     $total_sms = $sms[0];
