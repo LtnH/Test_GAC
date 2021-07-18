@@ -11,7 +11,7 @@ if (isset($_FILES['file']) AND $_FILES['file']['error'] == 0) { //vérrification
     $ext_alow = array('csv');
     if (in_array($ext_file, $ext_alow)) { //vérrification que le fichier est du bon type
         echo "\n" . 'le fichier est valide';
-        $filename = $_FILES['testee']['tmp_name'];
+        $filename = $_FILES['file']['tmp_name'];
         if (($handle = fopen($filename, 'r')) !== FALSE)
         {
             while (($row = fgetcsv($handle, 1000, ";")) !== FALSE) //upload du fichier sur la DB
