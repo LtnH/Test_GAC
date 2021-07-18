@@ -1,0 +1,8 @@
+CREATE TABLE Table_appel (
+    id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    date DATE NOT NULL,
+    hour TIME NOT NULL,
+    type VARCHAR(5) NOT NULL,
+    dur_ap TIME NULL,
+    tot_data DECIMAL(5,1) NULL
+    )
